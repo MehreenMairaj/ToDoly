@@ -53,22 +53,22 @@ public class Utilities {
         return true;
     }
 
-    public static String isDateBirth() {
+    public static String isDate() {
         String dob = null;
-        System.out.print("Enter date of birth (yyyy-mm-dd):");
+        System.out.print("Enter due date for task (yyyy-mm-dd):");
         LocalDate l = null;
         try {
             dob = sc.nextLine();
             l = LocalDate.parse(dob);
         } catch (Exception e) {
             System.err.println("Invalid date format, input as yyyy-mm-dd");
-            dob = isDateBirth();
+            dob = isDate();
         }
         return dob;
     }
     
     public static void header(){
-        System.out.println("ID  PROFESSION    NAME                     GENDER  SALARY   JOINING DATE   BIRTH DATE");
-        System.out.println("-------------------------------------------------------------------------------------");
+        System.out.println("TASK NO     TITLE                   DUE DATE         COMPLETED");
+        System.out.println("--------------------------------------------------------------");
     }
 }
