@@ -1,7 +1,9 @@
 package se.kth.sda.todoly.controller;
 
+import java.io.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 import se.kth.sda.todoly.model.Task;
 
 /**
@@ -9,151 +11,179 @@ import se.kth.sda.todoly.model.Task;
  *
  * @author tmp-sda-1163 Syeda Mehreen
  */
-public class TaskList {
+public class TaskList implements Serializable {
     // Arraylist to manage list of tasks.
 
     private static ArrayList<Task> taskList = new ArrayList<>();
-    private boolean isTask = false;
-    /** This method will add new task.
-     * 
+
+    /**
+     * This method will add new task.
+     *
      * @param t task to add.
      */
-     
-    public void addNewTask(Task t) {
-        taskList.add(t);
+    public void addNewTask(Task t) throws IOException {
+
+        try {
+            PrintWriter pw = new PrintWriter(new FileOutputStream("/Users/tmp-sda-1163/Desktop/outputTodoLy.txt"));
+            taskList.add(t);
+            pw.println(t);
+            pw.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
-    public void removeTask(int taskNo) {
-
+    public void removeTask(LocalDate taskDate, String taskName) {
         int temp = 0;
         int i = 0;
         // Checking if task exists then remove it
-        for (Task task : taskList) {
-            if (taskNo == task.getTaskNo()) {
-                temp = i;
-                isTask = true;
-                System.out.println("Task has been removed!");
+        try {
+            PrintWriter pw = new PrintWriter(new FileOutputStream("/Users/tmp-sda-1163/Desktop/outputTodoLy.txt"));
+            for (Task task : taskList) {
+                if (taskDate.isEqual(task.getDueDate()) && taskName.equalsIgnoreCase(task.getTitle())) {
+                    temp = i;
+                    taskList.remove(temp);
+                }
+                i++;
+               pw.println(task);
             }
-            i++;
-
-        }
-        taskList.remove(temp);
-
-        // If task doesnot exists prints message
-        if (!isTask) {
-            System.err.println("Task not found!");
+            pw.close();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
-    // Print all the task
-    public void listAllTasks() {
-        for (Task task : taskList) {
-            System.out.println(task.toString());
-        }
-    }
-
-    
-    /** 
+    /**
      * Shows the task by project
+     *
      * @param project the project of task we are looking for.
-     * 
-    */
-    public void listTaskByProject(String project) {
-        boolean foundProject = false;
+     *
+     */
+    public void findTaskByProject(String project) throws IOException {
 
-        // Checking if task exists then print it
-        for (Task task : taskList) {
-            if (project.equals(task.getProject())) {
-                System.out.println(task.toString());
-                foundProject = true;
-                
+        try {
+            PrintWriter pw = new PrintWriter(new FileOutputStream("/Users/tmp-sda-1163/Desktop/outputTodoLy.txt"));
+
+            for (Task task : taskList) {
+                if (project.equalsIgnoreCase(task.getProject())) {
+                    System.out.println(task.toString());
+                }
+                pw.println(task);
             }
-        }
-        // If task doesnot exists prints message
-        if (!foundProject) {
-            System.out.println("Task not found in such project!");
+            pw.close();
+
+            
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
-    /** 
+    /**
      * Shows the task by due date
-     * 
+     *
      * @param date is to provide to show all the tasks due on this date.
      */
-     
-    public void showTaskByDate(LocalDate date) {
-        for (Task task : taskList) {
-            if(date == task.getDueDate()){
-                System.out.println(task.toString());
-                 isTask = true;
+    public void showTaskByDate(LocalDate taskdate) {
+        try {
+            PrintWriter pw = new PrintWriter(new FileOutputStream("/Users/tmp-sda-1163/Desktop/ouputTodoLy.txt"));
+            for (Task task : taskList) {
+                if (taskdate.isEqual(task.getDueDate())) {
+                    System.out.println(task.toString());
+                }
+                pw.println(task);
             }
+            pw.close();System.out.println("Task not found on the given date!!");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        if (!isTask) {
-            System.out.println("Task not found for the date provided!");
-        }
+
     }
-    
-    
-    /** 
-     * Editing Task title by providing task number
-     * 
-     * @param taskNo is to provide in order to find the task by number
-     * @param newTitle the new title 
-     */
-    public void updateTaskTitleByTaskNo(int taskNo, String newTitle) {
-                 
-        for (Task task : taskList) {
-            if (taskNo == task.getTaskNo()) { 
-                task.setTitle(newTitle);
-                System.out.println("Task Number: " + task.getTaskNo() + " changed the title to " + newTitle);              
-             // header();                
-                System.out.println(task.toString());
-                isTask = true;
-            }
-        }
-         if (!isTask) {
-            System.out.println("Task not found!");
-        }
-    }
-    
-    
-    /* Editing Task title by providing due date, Old title and new Titlte
+
+    /* Editing Task title by providing due date, Old title and new Titlte in the file.
      * 
      */
-    public void updateTaskTitleByDate(LocalDate taskDate,String taskName, String newTitle) {
-                 
-        for (Task task : taskList) {
-            if (taskDate == task.getDueDate() && taskName.equals(task.getTitle())) { 
-                task.setTitle(newTitle);
-                System.out.println("Task Date: " + task.getDueDate() +" Old Task Title " + task.getTitle() +" changed the title to " + newTitle);              
-             // header();                
-                System.out.println(task.toString());
-                isTask = true;
+    public void updateTaskTitleByDate(LocalDate taskDate, String taskName, String newTitle) throws IOException {
+
+        try {
+            PrintWriter pw = new PrintWriter(new FileOutputStream("/Users/tmp-sda-1163/Desktop/outputTodoLy.txt"));
+            for (Task task : taskList) {
+                if (taskDate.isEqual(task.getDueDate()) && taskName.equalsIgnoreCase(task.getTitle())) {
+                    task.setTitle(newTitle);
+                    System.out.println(task.toString());
+                }
+                pw.println(task);
+                System.out.println("Task title updated sucessfully!");
             }
+            pw.close();
+            
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-         if (!isTask) {
-            System.out.println("Task not found!");
-        }
+
     }
-     
+
     /**
      * This method marks the task as done!
+     *
      * @param taskDate date of the task
      * @param taskName name of the task
      */
-    public void markAsDone(LocalDate taskDate, String taskName){
-        
-    for (Task task : taskList) {
-            if (taskDate == task.getDueDate() && taskName.equals(task.getTitle())) { 
-                task.setCompleted(true);
-                System.out.println("Found task has been marked as done!");
-                System.out.println(task.toString());
-                isTask = true;
+    public void markAsDone(LocalDate taskDate, String taskName) {
+        try {
+            PrintWriter pw = new PrintWriter(new FileOutputStream("/Users/tmp-sda-1163/Desktop/outputTodoLy.txt"));
+
+            for (Task task : taskList) {
+                if (taskDate.isEqual(task.getDueDate()) && taskName.equalsIgnoreCase(task.getTitle())) {
+                    task.setCompleted(true);
+                    System.out.println(task.toString());
+                }
+                pw.close();
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-         if (!isTask) {
-            System.out.println("Task not found!");
+
+    }
+
+    public void save() throws IOException {
+
+        try {
+            
+            PrintWriter outputStream = new PrintWriter(new FileOutputStream("/Users/tmp-sda-1163/Desktop/outputTodoLy.txt"));
+        
+                for (Task task : taskList) {
+                    outputStream.println(task);
+                }
+         
+            outputStream.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
-     
+
+    public void readFromFile() throws IOException {
+        
+        try {
+            
+           BufferedReader inputStream = new BufferedReader(new FileReader("/Users/tmp-sda-1163/Desktop/outputTodoLy.txt"));
+            PrintWriter outputStream = new PrintWriter(new FileOutputStream("/Users/tmp-sda-1163/Desktop/outputTodoLy.txt"));
+            String str;
+            while ((str = inputStream.readLine()) != null) {
+                for (Task task : taskList) {
+                    System.out.println(task);
+//                    outputStream.println(task);
+                }
+            }
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        
+        }
+
+    }
+
 }
